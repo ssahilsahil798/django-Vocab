@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.contrib.auth.models import User
 # Create your models here.
 
 class CardCategory(models.Model):
@@ -18,4 +18,10 @@ class Word(models.Model):
     def __str__(self):
         return self.word
 
+class LearntWords(models.Model):
 
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='learnt')
+    word = models.ForeignKey(Word, on_delete=models.CASCADE, related_name='learnt')
+
+    def __str__(self):
+        return self.word.word

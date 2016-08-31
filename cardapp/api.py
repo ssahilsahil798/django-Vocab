@@ -1,9 +1,9 @@
 
 from tastypie.resources import ModelResource, ALL_WITH_RELATIONS, ALL
-from cardapp.models import CardCategory, Word
+from cardapp.models import LearntWords, CardCategory, Word
 from django.contrib.auth.models import User
 from tastypie import fields
-#from tastypie.authorization import DjangoAuthorization
+from tastypie.authorization import Authorization
 from tastypie.authentication import ApiKeyAuthentication
 from django.conf.urls import url
 from tastypie.utils import trailing_slash
@@ -141,10 +141,33 @@ class WordResource(ModelResource):
 	always_return_data = True
         allowed_methods = ['get']
         authentication = ApiKeyAuthentication()
+        authorization = Authorization()
         filtering = {
                 'category': ALL_WITH_RELATIONS
             }
 
+class LearntWordResource(ModelResource):
+    user = fields.ForeignKey(UserResource, 'user', full=True)
+    word = fields.ForeignKey(WordResource, 'word', full=True)
+
+    class Meta:
+        queryset = LearntWords.objects.all()
+        resource_name = 'learntwords'
+        always_return_data = True
+        allowed_methods = ['get', 'post']
+        authentication = ApiKeyAuthentication()
+        authorization = Authorization()
+
+    def obj_get_list(self, bundle, **kwargs):
+        user = User.objects.get(username=bundle.request.GET['username'])
+        return user.learnt.all()
+
+    def hydrate(self, bundle):
+        print 'reached sahil'
+        bundle.obj.user = bundle.request.user
+        #print Word.objects.filter(word=bundle.data['word'])
+        #bundle.obj.word = Word.objects.filter(word=bundle.data['word'])
+        return bundle
 
 
 
