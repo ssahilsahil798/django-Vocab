@@ -23,5 +23,8 @@ class LearntWords(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='learnt')
     word = models.ForeignKey(Word, on_delete=models.CASCADE, related_name='learnt')
 
+    class Meta:
+        unique_together = ('user', 'word')
+
     def __str__(self):
         return self.word.word

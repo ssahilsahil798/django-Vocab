@@ -146,7 +146,7 @@ class WordResource(ModelResource):
                 'category': ALL_WITH_RELATIONS
             }
 
-class LearntWordResource(ModelResource):
+class LearntWordResource(MultipartResource, ModelResource):
     user = fields.ForeignKey(UserResource, 'user', full=True)
     word = fields.ForeignKey(WordResource, 'word', full=True)
 
@@ -154,9 +154,10 @@ class LearntWordResource(ModelResource):
         queryset = LearntWords.objects.all()
         resource_name = 'learntwords'
         always_return_data = True
-        allowed_methods = ['get', 'post']
+        allowed_methods = ['get', 'post', 'delete']
         authentication = ApiKeyAuthentication()
         authorization = Authorization()
+        serializer = Serializer()
 
     def obj_get_list(self, bundle, **kwargs):
         user = User.objects.get(username=bundle.request.GET['username'])
