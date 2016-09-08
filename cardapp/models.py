@@ -28,3 +28,23 @@ class LearntWords(models.Model):
 
     def __str__(self):
         return self.word.word
+
+class CardStatus(models.Model):
+
+    category = models.ForeignKey(CardCategory, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    total_words = models.IntegerField(default = 0)
+    words_completed = models.IntegerField(default = 0)
+
+    def __str__(self):
+        return self.category.category
+
+class WordStatus(models.Model):
+
+    word = models.ForeignKey(Word, on_delete=models.CASCADE, null=True)
+    card_status = models.ForeignKey(CardStatus, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    word_status = models.IntegerField(default = 0)
+
+    def __str__(self):
+        return self.card_status.category.category
